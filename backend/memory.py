@@ -6,6 +6,7 @@ load_dotenv()
 
 HINDSIGHT_API_KEY = os.getenv("HINDSIGHT_API_KEY")
 BASE_URL = "https://api.hindsight.vectorize.io"
+BANK_ID = "venkates123"
 
 # Local fallback memory store
 local_memory = {}
@@ -16,28 +17,29 @@ def get_memory(user_id, query):
     if HINDSIGHT_API_KEY:
         try:
             res = requests.post(
-                f"{BASE_URL}/search",
+                f"{BASE_URL}/v1/default/banks/{BANK_ID}/memories/search",
                 headers={
                     "Authorization": f"Bearer {HINDSIGHT_API_KEY}",
                     "Content-Type": "application/json"
                 },
                 json={
-                    "query": query,
-                    "filters": {"user_id": user_id},
-                    "top_k": 5
+                    "query": query
                 },
-                timeout=5
+                timeout=10
             )
+
+            print("RECALL STATUS:", res.status_code)
+            print("RECALL RESPONSE:", res.text[:500])
 
             if res.status_code == 200:
                 data = res.json()
-                memories = data.get("results", [])
+                results = data.get("results", [])
                 return [
-                    {"user": m.get("input", ""), "assistant": m.get("output", "")}
-                    for m in memories
+                    {"user": r.get("text", ""), "assistant": ""}
+                    for r in results
                 ]
         except Exception as e:
-            print("Hindsight API error, using local memory:", e)
+            print("Hindsight recall error, using local memory:", e)
 
     # Fallback to local memory
     return local_memory.get(user_id, [])[-5:]
@@ -52,21 +54,25 @@ def add_memory(user_id, user_input, response):
         "assistant": response
     })
 
-    # Also try Hindsight API
+    # Also try Hindsight API (retain)
     if HINDSIGHT_API_KEY:
         try:
-            requests.post(
-                f"{BASE_URL}/memories",
+            content = f"User ({user_id}) asked: {user_input}\nAssistant replied: {response}"
+            res = requests.post(
+                f"{BASE_URL}/v1/default/banks/{BANK_ID}/memories/retain",
                 headers={
                     "Authorization": f"Bearer {HINDSIGHT_API_KEY}",
                     "Content-Type": "application/json"
                 },
                 json={
-                    "input": user_input,
-                    "output": response,
-                    "metadata": {"user_id": user_id}
+                    "messages": [
+                        {"role": "user", "content": user_input},
+                        {"role": "assistant", "content": response}
+                    ]
                 },
-                timeout=5
+                timeout=10
             )
+            print("RETAIN STATUS:", res.status_code)
+            print("RETAIN RESPONSE:", res.text[:300])
         except Exception as e:
-            print("Memory store error:", e)
+            print("Hindsight retain error:", e)
