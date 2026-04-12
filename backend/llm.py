@@ -1,5 +1,11 @@
 import requests
+import certifi
+import os
 from config import GROQ_API_KEY, MODEL_NAME
+
+# Fix broken PostgreSQL TLS cert path that can hijack requests on some systems
+os.environ.pop("REQUESTS_CA_BUNDLE", None)
+os.environ.pop("SSL_CERT_FILE", None)
 
 
 def generate_response(user_input, memory):
@@ -42,10 +48,11 @@ User issue:
     }
 
     try:
-        response = requests.post(url, headers=headers, json=data)
+        # Use certifi's CA bundle to avoid broken system cert paths
+        response = requests.post(url, headers=headers, json=data, verify=certifi.where())
 
         print("STATUS:", response.status_code)
-        print("RESPONSE:", response.text)
+        print("RESPONSE:", response.text[:300])
 
         response.raise_for_status()
 
@@ -54,4 +61,4 @@ User issue:
 
     except Exception as e:
         print("LLM Error:", e)
-        return "Sorry, something went wrong. Please try again."
+        return "Sorry, something went wrong. Please try again."
