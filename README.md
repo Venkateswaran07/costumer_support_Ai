@@ -227,7 +227,7 @@ Return AI response → Frontend displays it
 ## 📂 Project Structure
 
 ```
-ai-support-agent/
+costumer_support_Ai/
 │
 ├── frontend/                   # Client-side UI
 │   ├── index.html              # Main HTML page with chat interface
@@ -241,6 +241,8 @@ ai-support-agent/
 │   ├── schemas.py              # Pydantic models — ChatRequest, ChatResponse
 │   └── config.py               # Environment config — loads API keys from .env
 │
+├── article.md                  # Detailed article about the building process
+├── Video Project 4.mp4         # Walkthrough/Demo video
 ├── requirements.txt            # Python dependencies
 ├── .env                        # API keys (excluded from Git)
 ├── .gitignore                  # Files to exclude from version control
