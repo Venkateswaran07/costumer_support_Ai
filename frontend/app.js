@@ -386,7 +386,7 @@ async function sendMessage() {
 
     } catch (error) {
         typingIndicator.classList.add("typing-hidden");
-        appendMessage("ai", "⚠️ Unable to reach the server. Make sure the backend is running on http://127.0.0.1:8000", getTimeString());
+        appendMessage("ai", `⚠️ Unable to reach the server. The backend at ${API_URL} might be off or starting up.`, getTimeString());
         console.error("Chat error:", error);
     }
 
