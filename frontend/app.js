@@ -3,7 +3,8 @@
    ============================================ */
 
 // --- State ---
-const API_URL = "https://costumer-support-ai-opal.vercel.app/";
+const isLocalHost = ["localhost", "127.0.0.1", "::1", "::", "0.0.0.0"].includes(window.location.hostname);
+const API_URL = "https://costumer-support-ai-opal.vercel.app";
 const userId = "user_" + Math.random().toString(36).substring(2, 9);
 
 let conversations = JSON.parse(localStorage.getItem("nexus_conversations") || "[]");
