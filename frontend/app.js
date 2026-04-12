@@ -3,7 +3,7 @@
    ============================================ */
 
 // --- State ---
-const API_URL = "http://127.0.0.1:8000/chat";
+const API_URL = "https://costumer-support-ai.onrender.com/chat";
 const userId = "user_" + Math.random().toString(36).substring(2, 9);
 
 let conversations = JSON.parse(localStorage.getItem("nexus_conversations") || "[]");
@@ -252,7 +252,7 @@ function escapeHtml(text) {
 function formatResponse(text) {
     // Basic markdown-like formatting
     let formatted = escapeHtml(text);
-    
+
     // Bold
     formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     // Inline code
