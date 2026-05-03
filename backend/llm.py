@@ -1,15 +1,24 @@
 import requests
 import certifi
 import os
-import google.generativeai as genai
-from config import GROQ_API_KEY, GEMINI_API_KEY, MODEL_NAME
+import vertexai
+from vertexai.generative_models import GenerativeModel
+from config import GROQ_API_KEY, MODEL_NAME
 
 # Fix broken PostgreSQL TLS cert path that can hijack requests on some systems
 os.environ.pop("REQUESTS_CA_BUNDLE", None)
 os.environ.pop("SSL_CERT_FILE", None)
 
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
+try:
+    # Initialize Vertex AI. This uses Google Cloud Default Credentials.
+    # When deployed to Cloud Run, it automatically picks up the service account.
+    vertexai.init()
+    vertex_model = GenerativeModel("gemini-1.5-flash")
+    VERTEX_AVAILABLE = True
+except Exception as e:
+    print(f"Vertex AI initialization failed: {e}. Falling back to Groq.")
+    VERTEX_AVAILABLE = False
+
 
 def generate_response(user_input, memory):
     history_text = ""
@@ -38,13 +47,12 @@ User query:
 """
 
     try:
-        if GEMINI_API_KEY:
-            # Use Google Gemini API
-            model = genai.GenerativeModel(MODEL_NAME)
-            response = model.generate_content(prompt)
+        if VERTEX_AVAILABLE:
+            # Use Google Cloud Vertex AI
+            response = vertex_model.generate_content(prompt)
             return response.text
         else:
-            # Fallback to Groq API if Gemini key is missing
+            # Fallback to Groq API if Vertex is unavailable (e.g. running locally without gcloud auth)
             url = "https://api.groq.com/openai/v1/chat/completions"
             headers = {
                 "Authorization": f"Bearer {GROQ_API_KEY}",

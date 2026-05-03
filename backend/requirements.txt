@@ -7,4 +7,4 @@ certifi
 hindsight-client
 pytest
 httpx
-google-generativeai
+google-cloud-aiplatform
