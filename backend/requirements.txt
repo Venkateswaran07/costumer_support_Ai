@@ -6,5 +6,6 @@ pydantic
 certifi
 hindsight-client
 pytest
+pytest-mock
 httpx
 google-cloud-aiplatform
