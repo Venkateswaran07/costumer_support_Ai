@@ -1,17 +1,17 @@
-# 🤖 AI Customer Support Agent
+# 🗳️ ElectionGuide (Interactive Voting Assistant)
 
-An intelligent, memory-powered customer support chatbot that uses **Large Language Models (LLMs)** to understand user issues, remember past conversations, and provide smart, context-aware solutions in real time.
+An intelligent, interactive assistant that helps users understand the election process, voting timelines, registration steps, and voter ID requirements in an easy-to-follow, step-by-step manner.
 
 ---
 
 ## 📌 What Is This Project?
 
-This is a **full-stack AI chatbot** built to simulate a real customer support experience. Unlike basic chatbots that give generic replies, this agent:
+This is a **full-stack AI assistant** built to simplify the democratic process. Unlike generic search engines, this agent:
 
-- **Understands natural language** — users can describe issues in plain English
-- **Remembers past conversations** — it knows if a user had the same problem before
-- **Avoids repeating failed solutions** — if a suggestion didn't work last time, it tries something new
-- **Responds instantly** — powered by Groq's ultra-fast LLM inference
+- **Provides clear, step-by-step guidance** on how to register and vote
+- **Formats timelines and dates clearly** using Markdown tables
+- **Remembers past questions** within the session to provide context-aware help
+- **Stays neutral and informative**, focusing purely on the 'how-to' of voting
 
 ---
 
@@ -47,7 +47,7 @@ def chat(request: ChatRequest):
 **How we used it:**  
 - In `llm.py`, we send a structured prompt to the Groq API via HTTP POST request
 - The prompt includes the user's current issue + their past conversation history
-- The model is instructed to detect repeated issues and suggest alternative solutions
+- The model is instructed to act as a neutral election assistant, formatting timelines and steps clearly using Markdown tables
 - We use the OpenAI-compatible chat completions endpoint (`/v1/chat/completions`)
 
 ```python
@@ -306,9 +306,9 @@ uvicorn main:app --reload
 
 | Feature | Description |
 |---------|-------------|
-| 🗣️ **Natural Language Understanding** | Users describe issues in plain English |
+| 🗳️ **Interactive Election Guide** | Provides clear, neutral voting instructions |
+| 📅 **Timeline Formatting** | Automatically structures key dates into readable Markdown tables |
 | 🧠 **Conversation Memory** | Remembers past interactions per user |
-| 🔄 **Repeat Issue Detection** | Detects recurring problems, suggests new solutions |
 | 💾 **Dual Memory System** | Vector DB (Hindsight) + automatic local fallback |
 | ⚡ **Ultra-Fast Responses** | Groq LPU delivers millisecond LLM inference |
 | 🛡️ **Error Resilient** | Graceful handling — never crashes on API failures |
