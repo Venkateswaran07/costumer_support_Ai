@@ -1,13 +1,12 @@
 /* ============================================
-   NEXUS AI — APPLICATION LOGIC
+   VOTER HUB — APPLICATION LOGIC
    ============================================ */
 
 // --- State ---
-const isLocalHost = ["localhost", "127.0.0.1", "::1", "::", "0.0.0.0"].includes(window.location.hostname);
-const API_URL = "https://costumer-support-ai-opal.vercel.app/chat";
-const userId = "user_" + Math.random().toString(36).substring(2, 9);
+const API_URL = "/chat";
+const userId = "voter_" + Math.random().toString(36).substring(2, 9);
 
-let conversations = JSON.parse(localStorage.getItem("nexus_conversations") || "[]");
+let conversations = JSON.parse(localStorage.getItem("voterhub_conversations") || "[]");
 let activeConversationId = null;
 let isWaiting = false;
 
@@ -33,7 +32,7 @@ const searchInput = document.getElementById("searchInput");
 //  THEME MANAGEMENT
 // ============================================
 function initTheme() {
-    const saved = localStorage.getItem("nexus_theme") || "dark";
+    const saved = localStorage.getItem("voterhub_theme") || "dark";
     document.documentElement.setAttribute("data-theme", saved);
     updateThemeLabel(saved);
 }
@@ -42,7 +41,7 @@ function toggleTheme() {
     const current = document.documentElement.getAttribute("data-theme");
     const next = current === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("nexus_theme", next);
+    localStorage.setItem("voterhub_theme", next);
     updateThemeLabel(next);
 }
 
@@ -112,7 +111,7 @@ function createConversation(firstMessage) {
 }
 
 function saveConversations() {
-    localStorage.setItem("nexus_conversations", JSON.stringify(conversations));
+    localStorage.setItem("voterhub_conversations", JSON.stringify(conversations));
     renderConversationsList();
 }
 
@@ -283,7 +282,7 @@ function appendMessage(role, content, time, animate = true) {
         </div>
         <div class="message-content">
             <div class="message-sender">
-                ${isUser ? "You" : "NexusAI"}
+                ${isUser ? "You" : "VoterHub"}
                 <span class="message-time">${time}</span>
             </div>
             <div class="message-bubble">${displayContent}</div>

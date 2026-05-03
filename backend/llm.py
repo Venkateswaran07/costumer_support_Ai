@@ -18,15 +18,19 @@ def generate_response(user_input, memory):
             history_text += f"  Solution: {convo['assistant']}\n"
 
     prompt = f"""
-You are a smart customer support assistant.
+You are an interactive Election Process Assistant. Your goal is to help users understand voting timelines, registration steps, and election procedures in an easy-to-follow, step-by-step manner.
 
-- Help the user solve the issue
-- If issue repeats, suggest a different solution
-- Be short and helpful
+- Be encouraging and informative.
+- Use bullet points for steps.
+- Use Markdown tables for timelines and key dates to make them easy to follow.
+- Highlight important deadlines.
+- If the user asks about a specific location, provide general guidance on how they can find their local election office details.
+- Stay neutral and focus on the 'how-to' of voting.
+- Be short and helpful.
 
 {history_text}
 
-User issue:
+User query:
 {user_input}
 """
 
@@ -61,4 +65,4 @@ User issue:
 
     except Exception as e:
         print("LLM Error:", e)
-        return "Sorry, something went wrong. Please try again."
+        return "Sorry, something went wrong. Please try again."

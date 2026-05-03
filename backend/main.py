@@ -1,4 +1,7 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 from schemas import ChatRequest, ChatResponse
 from memory import get_memory, add_memory
 from llm import generate_response
@@ -32,3 +35,10 @@ def chat(request: ChatRequest):
     add_memory(user_id, user_input, response)
 
     return {"response": response}
+# Serve frontend
+frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend")
+app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+
+@app.get("/")
+def serve_index():
+    return FileResponse(os.path.join(frontend_path, "index.html"))
