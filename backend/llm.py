@@ -48,24 +48,29 @@ User query:
 
     try:
         if VERTEX_AVAILABLE:
-            # Use Google Cloud Vertex AI
-            response = vertex_model.generate_content(prompt)
-            return response.text
-        else:
-            # Fallback to Groq API if Vertex is unavailable (e.g. running locally without gcloud auth)
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {
-                "Authorization": f"Bearer {GROQ_API_KEY}",
-                "Content-Type": "application/json"
-            }
-            data = {
-                "model": "llama-3.3-70b-versatile",
-                "messages": [{"role": "user", "content": prompt}]
-            }
-            response = requests.post(url, headers=headers, json=data, verify=certifi.where())
-            response.raise_for_status()
-            result = response.json()
-            return result["choices"][0]["message"]["content"]
+            try:
+                # Use Google Cloud Vertex AI
+                response = vertex_model.generate_content(prompt)
+                return response.text
+            except Exception as vertex_err:
+                print("Vertex AI generation failed:", vertex_err)
+                print("Falling back to Groq...")
+                # Fall through to Groq API block
+                
+        # Fallback to Groq API if Vertex is unavailable or failed
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        data = {
+            "model": "llama-3.3-70b-versatile",
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        response = requests.post(url, headers=headers, json=data, verify=certifi.where())
+        response.raise_for_status()
+        result = response.json()
+        return result["choices"][0]["message"]["content"]
 
     except Exception as e:
         print("LLM Error:", e)
